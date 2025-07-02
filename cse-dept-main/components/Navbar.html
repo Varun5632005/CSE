@@ -4,7 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Accessible Dropdown Menu</title>
+
+  <!-- Import Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS and jQuery -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -13,21 +17,25 @@
       font-family: 'Instrument Sans', sans-serif;
     }
 
+    /* Navbar background */
     .testClass {
       background-color: #06194A;
       font-size: 1rem;
     }
 
+    /* Initially hide all dropdown menus */
     .dropdown-menu {
       display: none;
     }
   </style>
 </head>
 <body>
+  <!-- Navbar wrapper -->
   <nav class="testClass">
     <div class="relative flex h-16 items-center justify-between px-4">
       <div class="flex flex-1 items-center justify-start">
         <div class="w-full sm:block">
+          <!-- Menu container where dropdown will be rendered -->
           <div class="flex flex-wrap gap-x-2 relative" id="menu-container"></div>
         </div>
       </div>
@@ -35,6 +43,7 @@
   </nav>
 
   <script>
+    // Menu data structure — deeply nested object for dropdowns
     const menuData = {
       "Students": {
         "Coding Performance": null,
@@ -110,6 +119,7 @@
       "Gallery": { "2023-24": null }
     };
 
+    // Function to render dropdown recursively
     const renderMenu = (data, level = 0) => {
       const baseClasses = "absolute bg-white rounded-md shadow-lg z-50 min-w-[12rem]";
       const positionClass = level === 0 ? "top-full mt-1 left-0" : "top-0 left-full ml-1";
@@ -117,30 +127,38 @@
       return `<div class="dropdown-menu ${baseClasses} ${positionClass}">` +
         Object.entries(data).map(([key, value]) => {
           const hasSub = value && typeof value === "object";
+
+          // If item has submenu
           return hasSub
             ? `<div class="relative dropdown-submenu">
                   <a href="#" class="flex items-center justify-between whitespace-nowrap px-4 py-2 text-sm hover:bg-blue-100 rounded-md">
                     ${key}
+                    <!-- Right arrow icon -->
                     <svg class="w-4 h-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                     </svg>
                   </a>
-                  ${renderMenu(value, level + 1)}
+                  ${renderMenu(value, level + 1)} <!-- Recursively render submenu -->
                 </div>`
-            : `<a href="#" class="block px-4 py-2 text-sm hover:bg-blue-100 rounded-md">${key}</a>`;
+            : `<a href="#" class="block px-4 py-2 text-sm hover:bg-blue-100 rounded-md">${key}</a>`; // Simple link
         }).join('') +
         `</div>`;
     };
 
+    // DOM ready: build menu from data
     document.addEventListener("DOMContentLoaded", () => {
       const container = document.getElementById("menu-container");
+
+      // Loop through top-level items
       Object.entries(menuData).forEach(([mainTitle, subMenu]) => {
         const hasSub = subMenu && typeof subMenu === "object";
+
         const html = `
           <div class="relative dropdown group">
             <a href="#" class="flex items-center justify-between whitespace-nowrap truncate overflow-hidden max-w-[16rem] px-3 py-2 text-sm font-medium text-white hover:text-gray-800 hover:bg-white rounded-md transition cursor-pointer">
               ${mainTitle}
               ${hasSub ? `
+                <!-- Down arrow icon -->
                 <svg class="w-4 h-4 ml-1 mt-1" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                 </svg>` : ""}
@@ -148,9 +166,12 @@
             ${hasSub ? renderMenu(subMenu) : ""}
           </div>
         `;
+
+        // Append to menu container
         container.insertAdjacentHTML("beforeend", html);
       });
 
+      // jQuery hover for top-level dropdowns
       $(".dropdown").hover(
         function () {
           $(this).children(".dropdown-menu").stop(true, true).fadeIn(150);
@@ -160,6 +181,7 @@
         }
       );
 
+      // jQuery hover for nested submenus
       $(".dropdown-submenu").hover(
         function () {
           $(this).children(".dropdown-menu").stop(true, true).fadeIn(150);
