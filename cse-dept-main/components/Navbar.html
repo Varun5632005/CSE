@@ -119,7 +119,7 @@
           const hasSub = value && typeof value === "object";
           return hasSub
             ? `<div class="relative dropdown-submenu">
-                  <a href="#" class="flex items-center justify-between whitespace-nowrap px-4 py-2 text-sm hover:bg-blue-100">
+                  <a href="#" class="flex items-center justify-between whitespace-nowrap px-4 py-2 text-sm hover:bg-blue-100 rounded-md">
                     ${key}
                     <svg class="w-4 h-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
@@ -127,7 +127,7 @@
                   </a>
                   ${renderMenu(value, level + 1)}
                 </div>`
-            : `<a href="#" class="block px-4 py-2 text-sm hover:bg-blue-100">${key}</a>`;
+            : `<a href="#" class="block px-4 py-2 text-sm hover:bg-blue-100 rounded-md">${key}</a>`;
         }).join('') +
         `</div>`;
     };
