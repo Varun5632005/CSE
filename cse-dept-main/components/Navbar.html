@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fully Responsive Dropdown Menu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+    }
+    .testClass {
+      background-color: #06194A;
+      font-size: 1rem;
+    }
+    .dropdown-menu {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <nav class="testClass px-4 py-2">
+    <div class="flex justify-between items-center">
+      <!-- ☰ Menu shown on all except desktop -->
+      <button id="menu-toggle" class="text-white lg:hidden px-2 py-1 border rounded-md">☰ Menu</button>
+    </div>
+
+    <!-- Menu shown only on large screens -->
+    <div id="menu-container-wrapper" class="hidden lg:flex lg:flex-wrap mt-1">
+      <div id="menu-container" class="flex flex-col lg:flex-row flex-wrap gap-3 w-full"></div>
+    </div>
+  </nav>
+
+  <script>
+    const menuData = {
+      "Students": {
+        "Coding Performance": null,
+        "Question Papers & Schemes": { "2024": null, "2023": null, "2022": null },
+        "Time Tables": { "I B.Tech": null, "II B.Tech": null, "III B.Tech": null, "IV B.Tech": null },
+        "Mentors": { "2023-24": null, "2022-23": null },
+        "Achievements": {
+          "2023-2024": { "Best Student": null },
+          "2022-2023": { "Best Student": null },
+          "2021-2022": null, "2020-2021": null, "2019-2020": null,
+          "2018-2019": null, "2017-2018": null, "2016-2017": null
+        },
+        "Gold Medals": null,
+        "Professional Societies": { "ACM": null, "ISTE": null, "CSI": null },
+        "Higher Studies": {
+          "Progression to Higher Studies": {
+            "2023-2024": null, "2022-2023": null, "2021-2022": null,
+            "2020-2021": null, "2019-2020": null, "2018-2019": null
+          },
+          "Qualifying in Competitive Exams": {
+            "2023-2024": null, "2022-2023": null, "2021-2022": null,
+            "2020-2021": null, "2019-2020": null, "2018-2019": null
+          }
+        },
+        "Workshops": {
+          "Organized": null
+        }
+      },
+      "Faculty": {
+        "Faculty List": null, "Adjunct Faculty": null, "Non-Teaching Staff": null,
+        "Ph.D. Holders": null, "Pursuing Ph.D.": null,
+        "Faculty Achievements": {
+          "2023-2024": null, "2022-2023": null, "2021-2022": null,
+          "2020-2021": null, "2019-2020": null, "2018-2019": null,
+          "2017-2018": null, "2016-2017": null
+        }
+      },
+      "Academics": {
+        "Course Structure & Syllabus": {
+          "PVP-23": null, "PVP-20": null, "PVP-19": null, "PVP-12": null
+        },
+        "Academic Calendar": { "III B.Tech": null, "IV B.Tech": null },
+        "Innovative Teaching Methods": {
+          "2023-24": null, "2022-23": null, "2021-22": null,
+          "2020-21": null, "2019-20": null
+        },
+        "Results": null
+      },
+      "Placements": {
+        "Summary": null, "2024-25": null, "2023-24": null,
+        "2022-23": null, "2021-22": null, "2020-21": null,
+        "2019-20": null, "2018-19": null, "2018-17": null,
+        "2017-16": null, "2016-15": null
+      },
+      "Internships": {
+        "2023-24": null, "2022-23": null,
+        "MOU's": { "Cisco": null, "Juniper": null, "Infosys": null }
+      },
+      "Alumni Interaction": { "2023-24": null, "2022-23": null },
+      "MOU's": { "2024-25": null, "2023-24": null },
+      "Research": { "Projects": null, "Patents": null, "Workshops": null },
+      "E-News Letter": {
+        "2023-24": { "July 2024": null, "January 2024": null },
+        "2022-23": { "July 2023": null, "January 2023": null }
+      },
+      "Department Clubs": {
+        "Arts club": null, "Innovation Club": null, "Literacy Club": null
+      },
+      "BOS": { "Members": null, "Minutes": null },
+      "Gallery": { "2023-24": null }
+    };
+
+  const renderMenu = (data, level = 0) => {
+  const baseClasses = "dropdown-menu absolute bg-white rounded-md shadow-lg z-50 min-w-[6rem]";
+  const positionClass = level === 0 ? "top-full mt-1 left-0" : "top-0 left-full ml-1";
+  return `<div class="${baseClasses} ${positionClass}">
+    ${Object.entries(data).map(([key, value]) => {
+      const hasSub = value && typeof value === "object";
+      return hasSub
+        ? `<div class="relative dropdown-submenu">
+              <a href="#" class="flex items-center justify-between gap-2 px-3 py-1 text-sm hover:bg-blue-100 rounded-md truncate whitespace-nowrap overflow-hidden">
+                ${key}
+                <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                </svg>
+              </a>
+              ${renderMenu(value, level + 1)}
+            </div>`
+        : `<a href="#" class="block px-3 py-1 text-sm hover:bg-blue-100 rounded-md truncate whitespace-nowrap overflow-hidden">${key}</a>`;
+    }).join('')}
+  </div>`;
+};
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.getElementById("menu-container");
+      Object.entries(menuData).forEach(([mainTitle, subMenu]) => {
+        const hasSub = subMenu && typeof subMenu === "object";
+        const html = `
+          <div class="relative dropdown group">
+            <a href="#" class="flex items-center gap-x-2 whitespace-nowrap truncate max-w-[16rem] px-2 py-1 text-sm font-medium text-white hover:text-gray-800 hover:bg-white rounded-md transition cursor-pointer">
+              ${mainTitle}
+              ${hasSub ? `
+                <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                </svg>` : ""}
+            </a>
+            ${hasSub ? renderMenu(subMenu) : ""}
+          </div>
+        `;
+        container.insertAdjacentHTML("beforeend", html);
+      });
+
+      $(".dropdown").hover(
+        function () {
+          if (window.innerWidth >= 1024) {
+            $(this).children(".dropdown-menu").stop(true, true).fadeIn(150);
+          }
+        },
+        function () {
+          if (window.innerWidth >= 1024) {
+            $(this).children(".dropdown-menu").stop(true, true).fadeOut(100);
+          }
+        }
+      );
+
+      $(".dropdown-submenu").hover(
+        function () {
+          if (window.innerWidth >= 1024) {
+            $(this).children(".dropdown-menu").stop(true, true).fadeIn(150);
+          }
+        },
+        function () {
+          if (window.innerWidth >= 1024) {
+            $(this).children(".dropdown-menu").stop(true, true).fadeOut(100);
+          }
+        }
+      );
+
+      // Mobile toggle for main menu
+      document.getElementById("menu-toggle").addEventListener("click", () => {
+        document.getElementById("menu-container-wrapper").classList.toggle("hidden");
+      });
+
+      // Dropdown toggle on mobile
+        $(document).on("click", ".dropdown > a", function (e) {
+          if (window.innerWidth < 1024) {
+            e.preventDefault();
+
+            // Close other open dropdowns
+            $(".dropdown-menu").not($(this).siblings(".dropdown-menu")).fadeOut(100);
+
+            // Toggle current dropdown
+            $(this).siblings(".dropdown-menu").stop(true, true).fadeToggle(150);
+          }
+        });
+
+        $(document).on("click", ".dropdown-submenu > a", function (e) {
+          if (window.innerWidth < 1024) {
+            e.preventDefault();
+
+            // Close other open submenus inside same parent
+            $(this).parent().siblings(".dropdown-submenu").children(".dropdown-menu").fadeOut(100);
+
+            // Toggle current submenu
+            $(this).siblings(".dropdown-menu").stop(true, true).fadeToggle(150);
+          }
+        });
+
+        $(document).on("click", function (e) {
+          if (window.innerWidth < 1024 && !$(e.target).closest(".dropdown").length) {
+            $(".dropdown-menu").fadeOut(100);
+          }
+        });
+
+
+    });
+  </script>
+</body>
+</html>
